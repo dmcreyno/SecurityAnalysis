@@ -148,33 +148,33 @@ public abstract class Phylagglom {
     double xl, double xr, double yt, double yb)  throws IOException{
     int i,j;
     double id,jd,xi,yi,xj,yj,seqmax,depmax;
-    java.io.PrintWriter OUT =new java.io.PrintWriter(new FileWriter(filename));
-    OUT.printf("%%!PS\n/Courier findfont 8 scalefont setfont\n");
-    seqmax = ph.seqmax;
-    depmax = ph.depmax;
-    for (i=0; i<2*(ph.n)-1; i++) {
-      j = ph.t[i].mo;
-      id = ph.t[i].dep;
-      jd = ph.t[j].dep;
-      xi = xl + (xr-xl)*id/depmax;
-      yi = yt - (yt-yb)*(ph.t[i].seq+0.5)/seqmax;
-      xj = xl + (xr-xl)*jd/depmax;
-      yj = yt - (yt-yb)*(ph.t[j].seq+0.5)/seqmax;
-      OUT.printf("%f %f moveto %f %f lineto %f %f lineto 0 setgray stroke\n",
-        xj,yj,xj,yi,xi,yi);
-      if (extend!=0) {
-        if (i < ph.n) {
-          OUT.printf("%f %f moveto %f %f lineto 0.7 setgray stroke\n",
-            xi,yi,xr,yi);
-          OUT.printf("%f %f moveto (%s (%02d)) 0 setgray show\n",
-            xr+3.,yi-2.,new String(str[i], 0, str[i].length-1),i);
+    try(java.io.PrintWriter OUT =new java.io.PrintWriter(new FileWriter(filename))) {
+        OUT.printf("%%!PS\n/Courier findfont 8 scalefont setfont\n");
+        seqmax = ph.seqmax;
+        depmax = ph.depmax;
+        for (i=0; i<2*(ph.n)-1; i++) {
+          j = ph.t[i].mo;
+          id = ph.t[i].dep;
+          jd = ph.t[j].dep;
+          xi = xl + (xr-xl)*id/depmax;
+          yi = yt - (yt-yb)*(ph.t[i].seq+0.5)/seqmax;
+          xj = xl + (xr-xl)*jd/depmax;
+          yj = yt - (yt-yb)*(ph.t[j].seq+0.5)/seqmax;
+          OUT.printf("%f %f moveto %f %f lineto %f %f lineto 0 setgray stroke\n",
+            xj,yj,xj,yi,xi,yi);
+          if (extend!=0) {
+            if (i < ph.n) {
+              OUT.printf("%f %f moveto %f %f lineto 0.7 setgray stroke\n",
+                xi,yi,xr,yi);
+              OUT.printf("%f %f moveto (%s (%02d)) 0 setgray show\n",
+                xr+3.,yi-2.,new String(str[i], 0, str[i].length-1),i);
+            }
+          } else {
+            if (i < ph.n) OUT.printf("%f %f moveto (%s (%02d)) 0 setgray show\n",
+              xi+3.,yi-2.,new String(str[i], 0, str[i].length-1),i);
+          }
         }
-      } else {
-        if (i < ph.n) OUT.printf("%f %f moveto (%s (%02d)) 0 setgray show\n",
-          xi+3.,yi-2.,new String(str[i], 0, str[i].length-1),i);
-      }
-    }
-    OUT.printf("showpage\n\004");
-    OUT.close();
+        OUT.printf("showpage\n\004");
+    } 
   }
 }

@@ -209,7 +209,7 @@ public class NRUtil {
   
   public static String toString(double[][]v){
     StringBuilder sb = new StringBuilder(256);
-    int nn = v.length;
+//    int nn = v.length;
     for (double[] doubles : v) {
       for (double aDouble : doubles) sb.append(String.format(" %g", aDouble));
       sb.append("\n");

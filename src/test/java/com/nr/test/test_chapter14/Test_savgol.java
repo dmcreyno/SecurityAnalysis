@@ -62,24 +62,28 @@ public class Test_savgol {
         
       }
 
-      Scanner sc = new Scanner(ans[i]);
-      localflag=false;
-      sbeps=1.e-3;
-      double r;
-      for (j=nl;j>=0;j--) {
-        r = sc.nextDouble();
-//        System.out.printf(c[j] << " %f\n", w << " %f\n", abs(c[j]-atof(w.c_str())));
-        localflag = localflag || abs(c[j]-r) > sbeps;
-      }
-      for (j=0;j<nr;j++) {
-        r = sc.nextDouble();
-//        System.out.printf(c[np-1-j] << " %f\n", w << " %f\n", w.c_str());
-        localflag = localflag || abs(c[np-1-j]-r) > sbeps;
-      }
-      globalflag = globalflag || localflag;
-      if (localflag) {
-        fail("*** savgol: Computed coefficients do not agree with book for case "+ i);
-        
+      try(Scanner sc = new Scanner(ans[i])) {
+          localflag=false;
+          sbeps=1.e-3;
+          double r;
+          for (j=nl;j>=0;j--) {
+            r = sc.nextDouble();
+//            System.out.printf(c[j] << " %f\n", w << " %f\n", abs(c[j]-atof(w.c_str())));
+            localflag = localflag || abs(c[j]-r) > sbeps;
+          }
+          for (j=0;j<nr;j++) {
+            r = sc.nextDouble();
+//            System.out.printf(c[np-1-j] << " %f\n", w << " %f\n", w.c_str());
+            localflag = localflag || abs(c[np-1-j]-r) > sbeps;
+          }
+          globalflag = globalflag || localflag;
+          if (localflag) {
+            fail("*** savgol: Computed coefficients do not agree with book for case "+ i);
+            
+          }
+    	  
+      } catch (Exception ex) {
+    	  ex.printStackTrace();
       }
 
     }
