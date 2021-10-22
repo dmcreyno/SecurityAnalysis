@@ -1,0 +1,6 @@
+[submodule "jwave"]
+	path = jwave
+	url = git@github.com:dmcreyno/JWave.git
+[submodule "jfreechart"]
+	path = jfreechart
+	url = https://github.com/jfree/jfreechart.git
