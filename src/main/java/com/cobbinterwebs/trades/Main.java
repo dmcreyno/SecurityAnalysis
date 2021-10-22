@@ -64,20 +64,19 @@ import java.util.stream.Stream;
  * Examples:
  * Initialize a set of folders for three trading symbols.
  * java -Dcom.ga.fidelity.trades.home=/research/tickers Main -i MSFT ORCL IBM
- * 
+ *
  * Process the data for all the trading symbols under the home directory.
  * java -Dcom.ga.fidelity.trades.home=/research/tickers Main
- * 
+ *
  * Process the data under the home directory for the symbol MSFT.
  * java -Dcom.ga.fidelity.trades.home=/research/tickers Main MSFT
- * 
+ *
  * TODO Alternative
  * Using your operating system specific features set an environment
  * variable named "com.ga.fidelity.trades.home"
  */
 public class Main {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.Main");
-    private int fileCounter = 0;
     private static String baseDir = "";
     private TradeWindow monthly;
     private Options options = new Options();
@@ -125,7 +124,7 @@ public class Main {
 	}
 
     /**
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -142,7 +141,7 @@ public class Main {
     }
     
     /**
-     * 
+     *
      */
     private void process() {
     	ArrayList<Thread> threadList = new ArrayList<>();
@@ -158,7 +157,7 @@ public class Main {
         	theDirStream.forEach(file -> {
                 String baseDirName = file.getAbsolutePath();
                 String tickerSymbol = file.getName();
-                if(Configuration.getInstance().symbolWillBeProcessed(tickerSymbol)) {                	
+                if(Configuration.getInstance().symbolWillBeProcessed(tickerSymbol)) {
                     Runnable ticketProcessor = new TickerProcessor(baseDirName, tickerSymbol);
                     // TODO move to a configurable thread pool.
                     Thread t = new Thread(ticketProcessor);
@@ -172,7 +171,7 @@ public class Main {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-            });              
+            });
         }
     }
 
