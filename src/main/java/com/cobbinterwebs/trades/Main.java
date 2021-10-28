@@ -1,5 +1,27 @@
 package com.cobbinterwebs.trades;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.cobbinterwebs.locale.DisplayKeys;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Copyright 2021 Cobb Interwebs, LLC
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -10,35 +32,7 @@ package com.cobbinterwebs.trades;
 ////////////////////////////////////////////////////////////////////////////////
 
 import com.cobbinterwebs.trades.config.Configuration;
-import com.cobbinterwebs.trades.format.TradeDayFormatFactory;
-import com.cobbinterwebs.trades.format.TradeDayPresentation;
-import com.cobbinterwebs.trades.format.TradeMonthAsTabular;
 import com.cobbinterwebs.trades.utils.Infrastructure;
-import com.cobbinterwebs.locale.DisplayKeys;
-import com.cobbinterwebs.trades.ITradeDay;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.TreeSet;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 /**
  *
@@ -76,7 +70,7 @@ import java.util.stream.Stream;
  * variable named "com.ga.fidelity.trades.home"
  */
 public class Main {
-    private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.Main");
+    private static final Logger log = LogManager.getLogger(Main.class);
     private static String baseDir = "";
     private TradeWindow monthly;
     private Options options = new Options();
@@ -96,10 +90,12 @@ public class Main {
     public CommandLine initCommandLine(String[] args) {
 		parser = new DefaultParser();
     	
-        if(log.isInfoEnabled()) {
+        if(log.isDebugEnabled()) {
+        	StringBuilder buf = new StringBuilder();
             for (String arg: args) {
-                log.info("Main(String[]) - arg: {}", arg);
+            	buf.append(arg);
             }
+            log.info("Main(String[]) - arg: {}", buf.toString());
         }
 		//***Parsing Stage***
 		//parse the options passed as command line arguments
@@ -138,49 +134,56 @@ public class Main {
             System.exit(-1);
         }
         app.process();
+        log.info(". . . finished.");
     }
     
     /**
      *
      */
     private void process() {
-    	ArrayList<Thread> threadList = new ArrayList<>();
         File dir = FileUtils.getFile(baseDir);
         File[] files = dir.listFiles();
         if(null == files) {
             log.error("No directories to process.");
         } else {
-        	
-        	// Refactor to expect list of tickers on command line.
-        	// Initialize the directories if missing.
+        	// Using the cached thread pool. If the application grows and we need to support
+        	// users attempting to process thousands of symbols then we will want to move
+        	// to a fixed thread pool.
+        	ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        	ArrayList<Thread> threadList = new ArrayList<>();
         	Stream<File> theDirStream = Arrays.stream(files).filter(File::isDirectory);
         	theDirStream.forEach(file -> {
                 String baseDirName = file.getAbsolutePath();
                 String tickerSymbol = file.getName();
                 if(Configuration.getInstance().symbolWillBeProcessed(tickerSymbol)) {
-                    Runnable ticketProcessor = new TickerProcessor(baseDirName, tickerSymbol);
-                    // TODO move to a configurable thread pool.
-                    Thread t = new Thread(ticketProcessor);
-                    threadList.add(t);
-                    t.start();
+                    Thread ticketProcessor = new TickerProcessor(baseDirName, tickerSymbol);
+                    threadList.add(ticketProcessor);
+                    executor.execute(ticketProcessor);
+                    log.debug("submitted {} for processing.", ticketProcessor.getName());
                 }
             });
+        	
         	threadList.forEach(aThread -> {
             	try {
-					aThread.join();
+					aThread.join(5000);
+					log.debug("finished processing, {}", aThread.getName());
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					log.warn("there was an issue processing ticker, {}.", aThread.getName(), e);
 				}
             });
         }
     }
 
 
+    /**
+     * 
+     * @return the list of ticker symbols being processed
+     */
 	List<String> getTickerList() {
 		cmd.getArgList().forEach(new Consumer<String>() {
 			@Override
 			public void accept(String t) {
-				log.info("found ticker, {}.",t);
+				log.debug("found ticker, {}.",t);
 			}
 		});
 		return cmd.getArgList();

@@ -27,35 +27,35 @@ import java.util.ArrayList;
  * in a list. Also, puts the dollar volume into <i>buckets</i> which are
  * defined in the configuration properties files.
  */
-abstract public class TradeDay implements ITradeDay {
+public abstract class TradeDay implements ITradeDay {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.TradeDay");
 
     /**
      * The date for which the data has been stored. Format: yyyymmdd.
      */
-    private String dateStr;
+     protected String dateStr;
 
     /**
      * The day-of-trading, 1, 2, 3, 4, 5, 6, etc of the collection of daily trade data input files.
      */
-    private int dayOrdinal;
+     protected int dayOrdinal;
 
     /**
      *
      */
-    private ArrayList<ITradeRecord> tradeList = new ArrayList<>();
+     protected ArrayList<ITradeRecord> tradeList = new ArrayList<>();
 
     /**
      * The daily file this class represents.
      */
-    private File aFile;
+     protected File aFile;
 
     /**
      * The properties file used to control aspects of the ticker being analyzed. Multiple tickers are
      * processed and each can be configured to have different properties, rounding, precision, etc. The TradeDay
      * needs this information to control maths.
      */
-    private Configuration config;
+     protected Configuration config;
 
     /**
      * The data comes as a CSV of trades for one day.
@@ -66,11 +66,13 @@ abstract public class TradeDay implements ITradeDay {
     }
 
 
-    public String getDateStr() {
+    @Override
+	public String getDateStr() {
         return dateStr;
     }
 
-    public ArrayList<ITradeRecord> getTradeList() {
+    @Override
+	public ArrayList<ITradeRecord> getTradeList() {
         return tradeList;
     }
 
@@ -79,7 +81,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the average price for the day
      */
-    public BigDecimal getAveragePrice() {
+    @Override
+	public BigDecimal getAveragePrice() {
         return getDollarVolume().divide(getVolume(), config.getMathScale(), RoundingMode.HALF_UP);
     }
 
@@ -87,7 +90,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the volume for the day
      */
-    public BigDecimal getVolume() {
+    @Override
+	public BigDecimal getVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord tradeRecord : tradeList) {
@@ -100,7 +104,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the buy volume for the day
      */
-    public BigDecimal getBuyVolume() {
+    @Override
+	public BigDecimal getBuyVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord trade : tradeList) {
@@ -116,7 +121,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the sell volume for the day
      */
-    public BigDecimal getSellVolume() {
+    @Override
+	public BigDecimal getSellVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord trade : tradeList) {
@@ -131,7 +137,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the unknown volume for the day
      */
-    public BigDecimal getUnknownVolume() {
+    @Override
+	public BigDecimal getUnknownVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord trade : tradeList) {
@@ -146,7 +153,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the dollar volume for the day
      */
-    public BigDecimal getDollarVolume() {
+    @Override
+	public BigDecimal getDollarVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord tradeRecord : tradeList) {
@@ -159,7 +167,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the dollar buy volume for the day
      */
-    public BigDecimal getBuyDollarVolume() {
+    @Override
+	public BigDecimal getBuyDollarVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord trade : tradeList) {
@@ -174,7 +183,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the dollar sell volume for the day
      */
-    public BigDecimal getSellDollarVolume() {
+    @Override
+	public BigDecimal getSellDollarVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord trade : tradeList) {
@@ -189,7 +199,8 @@ abstract public class TradeDay implements ITradeDay {
      *
      * @return the dollar unknown volume for the day
      */
-    public BigDecimal getUnknownDollarVolume() {
+    @Override
+	public BigDecimal getUnknownDollarVolume() {
         BigDecimal rVal = BigDecimal.ZERO;
 
         for (ITradeRecord trade : tradeList) {
@@ -200,15 +211,18 @@ abstract public class TradeDay implements ITradeDay {
         return rVal;
     }
 
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return this.tradeList.isEmpty();
     }
 
-    public int getDayOrdinal() {
+    @Override
+	public int getDayOrdinal() {
         return dayOrdinal;
     }
 
-    public void setDayOrdinal(int pDayOrdinal) {
+    @Override
+	public void setDayOrdinal(int pDayOrdinal) {
         dayOrdinal = pDayOrdinal;
     }
 
@@ -218,7 +232,8 @@ abstract public class TradeDay implements ITradeDay {
         return TradeDayFormatFactory.getTabularFormatter().formatTradeDay(this);
     }
 
-    public BigDecimal getPctBuyVol() {
+    @Override
+	public BigDecimal getPctBuyVol() {
         try {
             return getBuyVolume().divide(getVolume(),5,RoundingMode.HALF_UP);
         } catch(ArithmeticException ae) { }
@@ -226,7 +241,8 @@ abstract public class TradeDay implements ITradeDay {
         return BigDecimal.ZERO;
     }
 
-    public BigDecimal getPctSellVol() {
+    @Override
+	public BigDecimal getPctSellVol() {
         try {
             return getSellVolume().divide(getVolume(),5,RoundingMode.HALF_UP);
         } catch(ArithmeticException ae) { }
@@ -234,7 +250,8 @@ abstract public class TradeDay implements ITradeDay {
         return BigDecimal.ZERO;
     }
 
-    public BigDecimal getPctUnknownVol() {
+    @Override
+	public BigDecimal getPctUnknownVol() {
         try {
             return getUnknownVolume().divide(getVolume(),5,RoundingMode.HALF_UP);
         } catch(ArithmeticException ae) { }
@@ -242,7 +259,8 @@ abstract public class TradeDay implements ITradeDay {
         return BigDecimal.ZERO;
     }
 
-    public BigDecimal getPctBuyDolVol() {
+    @Override
+	public BigDecimal getPctBuyDolVol() {
         try {
             return getBuyDollarVolume().divide(getDollarVolume(), 5, RoundingMode.HALF_UP);
         } catch(ArithmeticException ae) { }
@@ -250,7 +268,8 @@ abstract public class TradeDay implements ITradeDay {
         return BigDecimal.ZERO;
     }
 
-    public BigDecimal getPctSellDolVol() {
+    @Override
+	public BigDecimal getPctSellDolVol() {
         try {
             return getSellDollarVolume().divide(getDollarVolume(),5,RoundingMode.HALF_UP);
         } catch(ArithmeticException ae) { }
@@ -258,7 +277,8 @@ abstract public class TradeDay implements ITradeDay {
         return BigDecimal.ZERO;
     }
 
-    public BigDecimal getPctUnknownDolVol() {
+    @Override
+	public BigDecimal getPctUnknownDolVol() {
         try {
             return getUnknownDollarVolume().divide(getDollarVolume(),5,RoundingMode.HALF_UP);
         } catch(ArithmeticException ae) { }
@@ -271,59 +291,25 @@ abstract public class TradeDay implements ITradeDay {
      * @param psw
      * @param formatter
      */
-    public void writeSummary(PrintWriter psw, TradeDayPresentation formatter) {
+    @Override
+	public void writeSummary(PrintWriter psw, TradeDayPresentation formatter) {
         psw.println(formatter.formatTradeDay(this));
     }
 
-    /**
-     * Wrapper around a buffered reader. While there is not much value in wrapping that class
-     * this class will skip the summary header info Fidelity puts in their exports.
-     */
-    public class CSVInputReader {
-        private final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades");
-        private final int LINE_NO_DATE = config.getDateLineNumber();
-        private BufferedReader reader;
-        private String dateStr;
-        private File file;
-
-        /**
-         * CTOR accepting an instance of a File .
-         * @param pFile the file to read from.
-         */
-        public CSVInputReader(File pFile) {
-            file=pFile;
-        }
-
-        void initFile() throws IOException {
-            reader = new BufferedReader(new FileReader(file));
-            // throw away the first few lines (as set by getHeaderSkipLineCount)
-            for (int i = 0; i < config.getHeaderSkipLineCount(); i++) {
-                String line = reader.readLine();
-                if(i == LINE_NO_DATE) { // the date line number. Date is read from file.
-                    log.debug(DisplayKeys.get(DisplayKeys.PROCESSING_FILE_DATE), line);
-                    dateStr = line;
-                }
+	@Override
+	public int getTeeTradeCount() {
+        int rVal = 0;
+        for (ITradeRecord trade : tradeList) {
+            if (trade.isTeeTrade()) {
+                rVal = rVal + 1;
             }
         }
+        
+        return rVal;
+	}
 
-        String getDate() {
-            return this.dateStr;
-        }
-
-        String readLine() throws IOException {
-            return reader.readLine();
-        }
-
-        void close() {
-            try {
-                reader.close();
-            } catch (Exception e) {
-                log.error(DisplayKeys.get(DisplayKeys.ERROR_FILE_CLOSE),file.getAbsolutePath(), e);
-            }
-        }
-    }
-
-    public String getDebugString() {
+    @Override
+	public String getDebugString() {
         String delimiter = "|";
         StringBuilder buf = new StringBuilder(this.getDayOrdinal() + delimiter +
                 this.getDateStr() + delimiter +

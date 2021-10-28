@@ -19,7 +19,7 @@ import com.cobbinterwebs.trades.format.TradeDayFormatFactory;
 import com.cobbinterwebs.trades.format.TradeDayPresentation;
 import com.cobbinterwebs.trades.format.TradeMonthAsTabular;
 
-class TickerProcessor implements Runnable {
+class TickerProcessor extends Thread {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.TickerProcessor");
 	String baseDirName;
 	String tickerSymbol;
@@ -29,6 +29,7 @@ class TickerProcessor implements Runnable {
 	public TickerProcessor(String pBaseDirName, String pTickerSymbol) {
 		this.baseDirName = pBaseDirName;
 		this.tickerSymbol = pTickerSymbol;
+		this.setName(pTickerSymbol);
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class DisplayKeys {
 
     private DisplayKeys() {
         Locale currentLocale = Locale.getDefault();
-        log.info("Locale: {}", currentLocale);
+        log.debug("Locale: {}", currentLocale);
         displayKeys = ResourceBundle.getBundle("DisplayKeys", currentLocale);
     }
 

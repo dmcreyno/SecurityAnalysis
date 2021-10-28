@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.cobbinterwebs.locale.DisplayKeys;
 import com.cobbinterwebs.trades.TradeRecord;
 
 public class TestTradeRecord extends TradeRecord {
