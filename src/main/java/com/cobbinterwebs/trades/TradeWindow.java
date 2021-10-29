@@ -184,12 +184,4 @@ public class TradeWindow {
         return tTradeCount;
 	}
     
-    /**
-     * Returns only the "Last Price" as an array of double.
-     *
-     * @return
-     */
-    public double[] getPriceListForAll() {
-        return this.tradeDayList.stream().flatMapToDouble(r -> r.getTradeList().stream().mapToDouble(aRec -> aRec.getPrice().doubleValue())).toArray();
-    }
 }

@@ -12,7 +12,6 @@ package com.cobbinterwebs.trades;
 import com.cobbinterwebs.trades.config.Configuration;
 import com.cobbinterwebs.trades.format.TradeDayFormatFactory;
 import com.cobbinterwebs.trades.format.TradeDayPresentation;
-import com.cobbinterwebs.locale.DisplayKeys;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,11 +40,6 @@ public abstract class TradeDay implements ITradeDay {
      protected int dayOrdinal;
 
     /**
-     *
-     */
-     protected ArrayList<ITradeRecord> tradeList = new ArrayList<>();
-
-    /**
      * The daily file this class represents.
      */
      protected File aFile;
@@ -56,6 +50,17 @@ public abstract class TradeDay implements ITradeDay {
      * needs this information to control maths.
      */
      protected Configuration config;
+     
+     private BigDecimal dollarVolume = BigDecimal.ZERO;
+     private BigDecimal volume = BigDecimal.ZERO;
+     private BigDecimal buyVolume = BigDecimal.ZERO;
+     private BigDecimal sellVolume = BigDecimal.ZERO;
+     private BigDecimal unknownVolume = BigDecimal.ZERO;
+     private BigDecimal buyDollarVolume = BigDecimal.ZERO;
+     private BigDecimal sellDollarVolume = BigDecimal.ZERO;
+     private BigDecimal unknownDollarVolume = BigDecimal.ZERO;
+     private int tradeCount = 0;
+     private int teeTradeCount = 0;
 
     /**
      * The data comes as a CSV of trades for one day.
@@ -67,15 +72,28 @@ public abstract class TradeDay implements ITradeDay {
 
 
     @Override
+    public void addTradeRecord(ITradeRecord pTradeRecord) {
+    	BigDecimal tradeSize = pTradeRecord.getSize();
+    	volume = volume.add(tradeSize);
+    	if(TradeRecord.BuySell.BUY == pTradeRecord.sentiment()) {
+    		buyVolume = buyVolume.add(volume);
+    	} else if(TradeRecord.BuySell.SELL == pTradeRecord.sentiment()) {
+    		sellVolume = sellVolume.add(volume);
+    	} else {
+    		unknownVolume = unknownVolume.add(volume);
+    	}
+    	tradeCount++;
+    	
+    	if(pTradeRecord.isTeeTrade()) {
+    		teeTradeCount++;
+    	}
+    }
+
+
+    @Override
 	public String getDateStr() {
         return dateStr;
     }
-
-    @Override
-	public ArrayList<ITradeRecord> getTradeList() {
-        return tradeList;
-    }
-
 
     /**
      *
@@ -83,7 +101,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getAveragePrice() {
-        return getDollarVolume().divide(getVolume(), config.getMathScale(), RoundingMode.HALF_UP);
+        return dollarVolume.divide(volume, config.getMathScale(), RoundingMode.HALF_UP);
     }
 
     /**
@@ -92,12 +110,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord tradeRecord : tradeList) {
-            rVal = rVal.add(tradeRecord.getSize());
-        }
-        return rVal;
+        return volume;
     }
 
     /**
@@ -106,14 +119,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getBuyVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord trade : tradeList) {
-            if (TradeRecord.BuySell.BUY == trade.sentiment()) {
-                rVal = rVal.add(trade.getSize());
-            }
-        }
-        return rVal;
+        return buyVolume;
     }
 
 
@@ -123,14 +129,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getSellVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord trade : tradeList) {
-            if (TradeRecord.BuySell.SELL == trade.sentiment()) {
-                rVal = rVal.add(trade.getSize());
-            }
-        }
-        return rVal;
+    	return sellVolume;
     }
 
     /**
@@ -139,14 +138,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getUnknownVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord trade : tradeList) {
-            if (ITradeRecord.BuySell.UNKNOWN == trade.sentiment()) {
-                rVal = rVal.add(trade.getSize());
-            }
-        }
-        return rVal;
+    	return unknownVolume;
     }
 
     /**
@@ -155,12 +147,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getDollarVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord tradeRecord : tradeList) {
-            rVal = rVal.add(tradeRecord.getDollarVolume());
-        }
-        return rVal;
+        return dollarVolume;
     }
 
     /**
@@ -169,14 +156,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getBuyDollarVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord trade : tradeList) {
-            if (ITradeRecord.BuySell.BUY == trade.sentiment()) {
-                rVal = rVal.add(trade.getDollarVolume());
-            }
-        }
-        return rVal;
+        return buyDollarVolume;
     }
 
     /**
@@ -185,14 +165,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getSellDollarVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord trade : tradeList) {
-            if (TradeRecord.BuySell.SELL == trade.sentiment()) {
-                rVal = rVal.add(trade.getDollarVolume());
-            }
-        }
-        return rVal;
+        return sellDollarVolume;
     }
 
     /**
@@ -201,20 +174,9 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getUnknownDollarVolume() {
-        BigDecimal rVal = BigDecimal.ZERO;
-
-        for (ITradeRecord trade : tradeList) {
-            if (ITradeRecord.BuySell.UNKNOWN == trade.sentiment()) {
-                rVal = rVal.add(trade.getDollarVolume());
-            }
-        }
-        return rVal;
+        return unknownDollarVolume;
     }
 
-    @Override
-	public boolean isEmpty() {
-        return this.tradeList.isEmpty();
-    }
 
     @Override
 	public int getDayOrdinal() {
@@ -298,14 +260,7 @@ public abstract class TradeDay implements ITradeDay {
 
 	@Override
 	public int getTeeTradeCount() {
-        int rVal = 0;
-        for (ITradeRecord trade : tradeList) {
-            if (trade.isTeeTrade()) {
-                rVal = rVal + 1;
-            }
-        }
-        
-        return rVal;
+        return teeTradeCount;
 	}
 
     @Override

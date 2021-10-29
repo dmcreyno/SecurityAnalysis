@@ -28,9 +28,9 @@ import java.util.ArrayList;
 public interface ITradeDay {
 	void process();
 	
-	String getDateStr();
+	void addTradeRecord(ITradeRecord pTradeRecord);
 	
-	ArrayList<ITradeRecord> getTradeList();
+	String getDateStr();
 	
 	BigDecimal getAveragePrice();
 	
@@ -51,8 +51,6 @@ public interface ITradeDay {
 	BigDecimal getSellDollarVolume();
 	
 	BigDecimal getUnknownDollarVolume();
-	
-	boolean isEmpty();
 	
 	int getDayOrdinal();
 	

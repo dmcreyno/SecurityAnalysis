@@ -30,7 +30,7 @@ public class TradeWindowTests extends AbstractBaseTestCase {
 		
 		TradeWindow month = new TradeWindow();
 		month.add(iTradeDay);
-		double[] prices = month.getPriceListForAll();
+//		double[] prices = month.getPriceListForAll();
 //		DiscreteWaveletTransform dwt = new DiscreteWaveletTransform(prices, 1);
 //		dwt.doFilterTest(64);
 	}

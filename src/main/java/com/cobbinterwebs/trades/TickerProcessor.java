@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.TreeSet;
@@ -100,8 +101,8 @@ class TickerProcessor extends Thread {
                 ITradeDay aDay = ITradeDay.create(aFile, config);
                 aDay.process();
 
-                
-                if(!aDay.isEmpty()) {
+                // if NOT zero volume.
+                if(!BigDecimal.ZERO.equals(aDay.getVolume())) {
                     this.fileCounter++;
                     aDay.setDayOrdinal(this.fileCounter);
                     windowTotals.add(aDay);

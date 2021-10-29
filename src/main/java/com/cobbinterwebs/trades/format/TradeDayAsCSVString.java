@@ -10,6 +10,9 @@ package com.cobbinterwebs.trades.format;
 ////////////////////////////////////////////////////////////////////////////////
 
 import com.cobbinterwebs.trades.ITradeDay;
+
+import java.math.BigDecimal;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +34,9 @@ public class TradeDayAsCSVString implements TradeDayPresentation {
      */
     @Override
     public String formatTradeDay(ITradeDay aTradeDay) {
-        if(aTradeDay.getTradeList().isEmpty()) {
+    	// if there is no volume, put zeros.
+        if(BigDecimal.ZERO.equals(aTradeDay.getVolume())) {
+        	// RETURN
             return  aTradeDay.getDayOrdinal() + delimiter +
                     aTradeDay.getDateStr() + delimiter +
                     0 + delimiter +

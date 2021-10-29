@@ -29,10 +29,6 @@ public class TradeDayAsTabular implements TradeDayPresentation {
 
     @Override
     public String formatTradeDay(ITradeDay aTradeDay) {
-        if(aTradeDay.getTradeList().isEmpty()) {
-            return  "No trades recorded.";
-        }
-
         // Create some formatters for the money and percentages and share volume
         NumberFormat percentageFormatter = new DecimalFormat("0.0##%");
         NumberFormat shareVolumeFormatter = new DecimalFormat("#,###");
@@ -58,15 +54,6 @@ public class TradeDayAsTabular implements TradeDayPresentation {
                         DisplayKeys.get(DisplayKeys.SUMMARY_T_TRADE_COUNT, aTradeDay.getTeeTradeCount());
 
 
-        if(Configuration.getInstance().includeTrades()) {
-            // Now append the trades for the day.
-            ArrayList<ITradeRecord> trades = aTradeDay.getTradeList();
-            TreeSet<ITradeRecord> sortedTrades = new TreeSet<>(trades);
-            StringBuilder buf = new StringBuilder(rVal);
-            sortedTrades.forEach(aRecord -> buf.append("\n").append(aRecord.toString()));
-
-            rVal = buf.toString();
-        }
         return rVal;
     }
 

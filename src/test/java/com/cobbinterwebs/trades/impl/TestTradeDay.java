@@ -68,11 +68,6 @@ public class TestTradeDay implements com.cobbinterwebs.trades.ITradeDay {
 		return "12/12/2012";
 	}
 	
-	@Override
-	public ArrayList<ITradeRecord> getTradeList() {
-		return tradeList;
-	}
-	
 	/**
 	 *
 	 * @return the average price for the day
@@ -219,11 +214,6 @@ public class TestTradeDay implements com.cobbinterwebs.trades.ITradeDay {
 	}
 	
 	@Override
-	public boolean isEmpty() {
-		return this.tradeList.isEmpty();
-	}
-	
-	@Override
 	public int getDayOrdinal() {
 		return dayOrdinal;
 	}
@@ -362,5 +352,11 @@ public class TestTradeDay implements com.cobbinterwebs.trades.ITradeDay {
 				"SellDollarVolume=" + getSellDollarVolume() + ", " +
 				"UnknownDollarVolume=" + getUnknownDollarVolume() + ", " +
 				"TeeTrade=" + getTeeTradeCount() + "]";
+	}
+
+	@Override
+	public void addTradeRecord(ITradeRecord pTradeRecord) {
+		// TODO Auto-generated method stub
+		
 	}
 }
