@@ -28,6 +28,7 @@ public class Configuration {
     private Map<String,String> mapOfSymbolsFromCommandLine = new HashMap<>();
 
     public static class PropertyConstants {
+        public static final String TRADE_CHART_TYPE         = "com.cobbinterwebs.trade.chart.class";
         public static final String TRADE_DAY_TYPE         = "com.cobbinterwebs.trade.day.class";
         public static final String TRADE_RECORD_TYPE      = "com.cobbinterwebs.trade.record.class";
         public static final String HOME_KEY               = "com.cobbinterwebs.trades.home";
@@ -195,5 +196,9 @@ public class Configuration {
     public Boolean symbolWillBeProcessed(String symbol) {
     	return mapOfSymbolsFromCommandLine.containsKey(symbol);
     }
+
+	public String getTradeChartType() {
+		return config.getString(PropertyConstants.TRADE_CHART_TYPE);
+	}
 
 }
