@@ -1,5 +1,6 @@
 package com.cobbinterwebs.trades;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -7,6 +8,14 @@ import java.math.RoundingMode;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.Minute;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.svg.SVGGraphics2D;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Copyright 2021 Cobb Interwebs, LLC
@@ -23,8 +32,9 @@ import com.cobbinterwebs.trades.format.TradeDayPresentation;
 
 /**
  * Reads the data for one day of trading and stores the stats. Keeps the trades
- * in a list. Also, puts the dollar volume into <i>buckets</i> which are
- * defined in the configuration properties files.
+ * in a list.
+ * 
+ * @see com.cobbinterwebs.trades.TradeDay
  */
 public abstract class TradeDay implements ITradeDay {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.TradeDay");
@@ -43,6 +53,15 @@ public abstract class TradeDay implements ITradeDay {
      * The daily file this class represents.
      */
      protected File aFile;
+
+     JFreeChart chart;
+     SVGGraphics2D g2;
+     Rectangle r;
+     File f;
+     TimeSeries s1 = new TimeSeries("Dataset");
+ 	 Day aDay = new Day(1, 10, 2021);
+ 	 Hour hr = new Hour(1, aDay);
+
 
     /**
      * The properties file used to control aspects of the ticker being analyzed. Multiple tickers are
@@ -68,6 +87,10 @@ public abstract class TradeDay implements ITradeDay {
     public TradeDay(File pFile, Configuration pConfig) {
         config = pConfig;
         aFile = pFile;
+        g2 = new SVGGraphics2D(600, 400);
+        g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
+        r = new Rectangle(0, 0, 600, 400);
+        chart.draw(g2, r);
     }
 
 
@@ -89,7 +112,25 @@ public abstract class TradeDay implements ITradeDay {
     	}
     }
 
+/*
+ 
+ 	private XYDataset createDataset() {
+		
+		s1.add(new Minute(1, hr), 126.80);
+		s1.add(new Minute(2, hr), 127.80);
+		s1.add(new Minute(3, hr), 125.80);
+		s1.add(new Minute(4, hr), 126.80);
+		s1.add(new Minute(5, hr), 126.80);
+		s1.add(new Minute(6, hr), 128.80);
+		
+		TimeSeriesCollection dataset = new TimeSeriesCollection();
+		dataset.addSeries(s1);
+		
+		return dataset;
+	}
 
+ 
+ */
     @Override
 	public String getDateStr() {
         return dateStr;

@@ -44,11 +44,11 @@ import com.cobbinterwebs.trades.utils.Infrastructure;
  * using the -D option where the base directory is defined. It is assumed the directory will have
  * a sub-folder named <i>input</i> when the CSV files downloaded from Fidelity will be found.
  *
- * The code will travers all subdirectories and pick up any file with a "csv" extension inside an "input" directory.
+ * The code will traverse all sub-directories and pick up any file with a "csv" extension inside an "input" directory.
  * <b>Example</b><br>
  * -Dcom.ga.fidelity.trades.home=/users/mary/trade_data
  *
- * The code will process only the passed subdirectories and pick up any file with a "csv" extension inside an "input"
+ * The code will process only the passed sub-directories and pick up any file with a "csv" extension inside an "input"
  * directory.
  * <b>Example</b><br>
  * -Dcom.ga.fidelity.trades.home=/users/mary/trade_data
@@ -66,11 +66,14 @@ import com.cobbinterwebs.trades.utils.Infrastructure;
  * TODO Alternative
  * Using your operating system specific features set an environment
  * variable named "com.ga.fidelity.trades.home"
+ * @see com.cobbinterwebs.trades.TickerProcessor
+ * @see com.cobbinterwebs.localeDisplayKeys
+ * @see com.cobbinterwebs.trades.config.Configuration
+ * @see com.cobbinterwebs.trades.utils.Infrastructure
  */
 public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
     private static String baseDir = "";
-    private TradeWindow monthly;
     private Options options = new Options();
     CommandLineParser parser;
     CommandLine cmd;
@@ -118,8 +121,12 @@ public class Main {
 	}
 
     /**
-     *
-     * @param args
+     * Entry point.
+     * 
+     *  If args is null or empty all ticker symbol folders under the folder defined by the
+     *  JVM parameter -Dcom.cobbinterwebs.trades.home will be processed. If the symbol does
+     *  not exist, the directory structure will be configured automatically.
+     * @param args the ticker symbols to process.
      */
     public static void main(String[] args) {
         log.info(DisplayKeys.get(DisplayKeys.STARTUP));
@@ -136,7 +143,8 @@ public class Main {
     }
     
     /**
-     *
+     * Multi-threaded implementation gathers the ticker symbols and creates a thread 
+     * for each symbol.
      */
     private void process() {
         File dir = FileUtils.getFile(baseDir);

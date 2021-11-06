@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.text.StringTokenizer;
@@ -14,6 +17,7 @@ import com.cobbinterwebs.locale.DisplayKeys;
 
 /**
  * Data for a single trade.
+ * @see com.cobbinterwebs.trades.ITradeRecord
  */
 public abstract class TradeRecord implements Comparable<TradeRecord>, ITradeRecord {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.trades.TradeRecord");
@@ -37,6 +41,7 @@ public abstract class TradeRecord implements Comparable<TradeRecord>, ITradeReco
         }
     }
 
+   abstract public Date getTime();
 
     /**
      * Needed for unit tests.

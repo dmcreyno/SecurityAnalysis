@@ -18,6 +18,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.cobbinterwebs.trades.config.Configuration;
 
+/**
+ * Data for a single trade. Trade records must implement this interface. The library include a
+ * default abstract implementation from which you may derive the platform specific implementation.
+ * @see com.cobbinterwebs.trades.TradeRecord
+ */
+
 public interface ITradeRecord {
 	static final Logger log = LogManager.getLogger("com.cobbinterwebs.trades.ITradeRecord");
 	

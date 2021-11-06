@@ -10,6 +10,7 @@ package com.cobbinterwebs.trades.impl;
 
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,4 +41,12 @@ public class TestTradeRecord extends TradeRecord {
 	public TestTradeRecord(String pTimeString, BigDecimal pPrice, BigDecimal pSize, BigDecimal pBid, BigDecimal pAsk) {
 		super(pTimeString, pPrice, pSize, pBid, pAsk);
 	}
+
+	@Override
+	public Date getTime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 }

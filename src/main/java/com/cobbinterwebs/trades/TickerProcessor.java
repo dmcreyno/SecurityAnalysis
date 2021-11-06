@@ -1,5 +1,6 @@
 package com.cobbinterwebs.trades;
 
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,19 +21,32 @@ import com.cobbinterwebs.trades.format.TradeDayFormatFactory;
 import com.cobbinterwebs.trades.format.TradeDayPresentation;
 import com.cobbinterwebs.trades.format.TradeMonthAsTabular;
 
+/**
+ * Processes the data for a single stock symbol. Synchronous processing of the CSV
+ * trade record files.
+ * 
+ * Supports multi-threaded application which is the default implementation
+ * of the application. The application is able to process more than one set of data files
+ * in parallel.
+ * @author Cobb Interwebs, LLC
+ *
+ */
 class TickerProcessor extends Thread {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.TickerProcessor");
 	String baseDirName;
 	String tickerSymbol;
 	int fileCounter = 0;
     private TradeWindow windowTotals;
-	
+   
 	public TickerProcessor(String pBaseDirName, String pTickerSymbol) {
 		this.baseDirName = pBaseDirName;
 		this.tickerSymbol = pTickerSymbol;
 		this.setName(pTickerSymbol);
 	}
 
+	/**
+	 * @see java.lang.Thread
+	 */
 	@Override
 	public void run() {
 		

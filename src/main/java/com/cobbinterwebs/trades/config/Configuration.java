@@ -27,10 +27,18 @@ public class Configuration {
 
     private Map<String,String> mapOfSymbolsFromCommandLine = new HashMap<>();
 
+    /**
+     * 
+     * Helpful definitions of the items defined in the properties file.
+     *
+     */
     public static class PropertyConstants {
         public static final String TRADE_CHART_TYPE         = "com.cobbinterwebs.trade.chart.class";
         public static final String TRADE_DAY_TYPE         = "com.cobbinterwebs.trade.day.class";
         public static final String TRADE_RECORD_TYPE      = "com.cobbinterwebs.trade.record.class";
+        /**
+         * The directory containing the folders for the various stock symbols to be processed.
+         */
         public static final String HOME_KEY               = "com.cobbinterwebs.trades.home";
         public static final String RUNNING_AVERAGE        = "com.cobbinterwebs.running.vwda";
         static final String OUTPUT_HEADER_LINE_01         = "com.cobbinterwebs.trades.output.header1";
@@ -69,13 +77,17 @@ public class Configuration {
 
     private static Configuration _instance;
     
+    /**
+     * This is a singleton implementation.
+     */
     static {
         _instance = new Configuration(System.getProperty(Configuration.PropertyConstants.HOME_KEY));
     }
 
     /**
      *
-     * @param pBaseDir the directory containing the ticker folders
+     * @param pBaseDir the directory containing the ticker folders.
+     * @see com.cobbinterwebs.trades.config.Configuration.PropertyConstants.HOME_KEY
      */
     private Configuration(String pBaseDir) {
         baseDir = pBaseDir;
@@ -115,10 +127,18 @@ public class Configuration {
     }
 
 
+    /**
+     * 
+     * @return the single instance of com.cobbinterwebs.trades.config.Configuration.
+     */
     public static Configuration getInstance() {
         return _instance;
     }
 
+    /**
+     * 
+     * @return the home (base) directory as defined by the JVM parameter "com.cobbinterwebs.trades.home"
+     */
     public String getHomeDir() {
         return baseDir;
     }
