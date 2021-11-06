@@ -18,9 +18,9 @@ Use the VM argument -Dcom.cobbinterwebs.trades.home to pass the value to the app
 ## Example - assuming you have ticker folders under c:\trading-data. The directory structure might be something like this . . .
 - trading-data
   - MSFT
-    -input
+    - input
   - APPL
-    -input   
+    - input   
 
 -Dcom.cobbinterwebs.trades.home=c:\trading-data
 
