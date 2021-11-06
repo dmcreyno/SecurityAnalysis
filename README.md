@@ -9,18 +9,24 @@ Use the VM argument -Dcom.cobbinterwebs.trades.home to pass the value to the app
 ## Dependencies
 - [Security Analysis](https://github.com/dmcreyno/SecurityAnalysis)
 - [JWave - Forked](https://github.com/dmcreyno/JWave)
+- [jfreechart](https://github.com/jfree/jfreechart)
+- [jfreechart-svg](https://github.com/jfree/jfreesvg)
 - [JWave - Original Project](https://github.com/graetz23/JWave)
 
-### JWave
 
-## Example
+
+## Example - assuming you have ticker folders under c:\trading-data. The directory structure might be something like this . . .
+- trading-data
+  - MSFT
+    -input
+  - APPL
+    -input   
+
 -Dcom.cobbinterwebs.trades.home=c:\trading-data
-
-The trading-data directory could have sub-directories: MSFT, GWRE.
 
 To provide finer grained control over execution, the application will expect you to pass in the trading symbols to be analyzed for the current run.
 
 Also, if you specify a trading symbol and that symbol does not exist, the application will fill out the directory structures for you. You can then copy the trading data you have into the <symbol>/input directory.
 
 ## Command Line Example
-java -Dcom.cobbinterwebs.trades.home=c:\trading-data GWRE MSFT
+java -Dcom.cobbinterwebs.trades.home=c:\trading-data APPL MSFT
