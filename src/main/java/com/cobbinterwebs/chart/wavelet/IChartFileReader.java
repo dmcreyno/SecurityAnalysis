@@ -1,4 +1,4 @@
-package com.cobbinterwebs.charts.wavlet;
+package com.cobbinterwebs.chart.wavelet;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -6,11 +6,16 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.cobbinterwebs.trades.config.Configuration;
 
-public interface IChartReader {
+/**
+ * 
+ * @author Cobb Interwebs, LLC
+ *
+ */
+public interface IChartFileReader {
 	@SuppressWarnings("unchecked")
-	static IChartReader create(File pFile, Configuration pConfig) throws Error {
+	static IChartFileReader create(File pFile, Configuration pConfig) throws Error {
 		String className = Configuration.getInstance().getTradeChartType();
-		IChartReader rVal;
+		IChartFileReader rVal;
 		@SuppressWarnings("rawtypes")
 		Class clazz;
 		try {
@@ -18,7 +23,7 @@ public interface IChartReader {
 			
 			try {
 			@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class, Configuration.class);
-			rVal = (IChartReader) ctor.newInstance(pFile,pConfig);
+			rVal = (IChartFileReader) ctor.newInstance(pFile,pConfig);
 			} catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
 				throw new Error(e);
 			}
