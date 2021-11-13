@@ -88,6 +88,28 @@ public class Main {
     	initCommandLine(args);
     }
     
+    /**
+     * Entry point.
+     * 
+     *  If args is null or empty all ticker symbol folders under the folder defined by the
+     *  JVM parameter -Dcom.cobbinterwebs.trades.home will be processed. If the symbol does
+     *  not exist, the directory structure will be configured automatically.
+     * @param args the ticker symbols to process.
+     */
+    public static void main(String[] args) {
+        log.info(DisplayKeys.get(DisplayKeys.STARTUP));
+        Main app = new Main(args);
+        
+        // The home directory has folders for each ticker symbol to be analyzed.
+        baseDir = System.getProperty(Configuration.PropertyConstants.HOME_KEY);
+        if(baseDir == null || baseDir.length() == 0) {
+            log.fatal(DisplayKeys.get(DisplayKeys.STARTUP_BASEDIR_MISSING), Configuration.PropertyConstants.HOME_KEY);
+            System.exit(-1);
+        }
+        app.process();
+        log.info(". . . finished.");
+    }
+    
     public CommandLine initCommandLine(String[] args) {
 		parser = new DefaultParser();
     	
@@ -121,28 +143,6 @@ public class Main {
 	}
 
     /**
-     * Entry point.
-     * 
-     *  If args is null or empty all ticker symbol folders under the folder defined by the
-     *  JVM parameter -Dcom.cobbinterwebs.trades.home will be processed. If the symbol does
-     *  not exist, the directory structure will be configured automatically.
-     * @param args the ticker symbols to process.
-     */
-    public static void main(String[] args) {
-        log.info(DisplayKeys.get(DisplayKeys.STARTUP));
-        Main app = new Main(args);
-        
-        // The home directory has folders for each ticker symbol to be analyzed.
-        baseDir = System.getProperty(Configuration.PropertyConstants.HOME_KEY);
-        if(baseDir == null || baseDir.length() == 0) {
-            log.fatal(DisplayKeys.get(DisplayKeys.STARTUP_BASEDIR_MISSING), Configuration.PropertyConstants.HOME_KEY);
-            System.exit(-1);
-        }
-        app.process();
-        log.info(". . . finished.");
-    }
-    
-    /**
      * Multi-threaded implementation gathers the ticker symbols and creates a thread 
      * for each symbol.
      */
@@ -161,6 +161,7 @@ public class Main {
         	theDirStream.forEach(file -> {
                 String baseDirName = file.getAbsolutePath();
                 String tickerSymbol = file.getName();
+                log.info("processing ticker, {}, in {}.", tickerSymbol, baseDirName);
                 if(Configuration.getInstance().symbolWillBeProcessed(tickerSymbol)) {
                     Thread ticketProcessor = new TickerProcessor(baseDirName, tickerSymbol);
                     threadList.add(ticketProcessor);

@@ -33,7 +33,8 @@ public class Configuration {
      *
      */
     public static class PropertyConstants {
-        public static final String TRADE_CHART_TYPE         = "com.cobbinterwebs.trade.chart.class";
+        public static final String CHART_RECORD_PROCESSOR_TYPE         = "com.cobbinterwebs.trade.chart.record.class";
+        public static final String CHART_PROCESSOR_TYPE         = "com.cobbinterwebs.trade.chart.processor.class";
         public static final String TRADE_DAY_TYPE         = "com.cobbinterwebs.trade.day.class";
         public static final String TRADE_RECORD_TYPE      = "com.cobbinterwebs.trade.record.class";
         /**
@@ -217,8 +218,26 @@ public class Configuration {
     	return mapOfSymbolsFromCommandLine.containsKey(symbol);
     }
 
-	public String getTradeChartType() {
-		return config.getString(PropertyConstants.TRADE_CHART_TYPE);
+	/**
+	 * @return
+	 */
+	public String getChartRecordProcessorType() {
+		String rVal = config.getString(PropertyConstants.CHART_RECORD_PROCESSOR_TYPE);
+		if(null == rVal || rVal.length() ==0) {
+			throw new IllegalArgumentException(PropertyConstants.CHART_RECORD_PROCESSOR_TYPE + " - is null or empty");
+		}
+		return rVal;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getChartProcessorType() {
+		String rVal = config.getString(PropertyConstants.CHART_PROCESSOR_TYPE);
+		if(null == rVal || rVal.length() ==0) {
+			throw new IllegalArgumentException(PropertyConstants.CHART_PROCESSOR_TYPE + " - is null or empty");
+		}
+		return rVal;
 	}
 
 }

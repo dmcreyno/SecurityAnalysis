@@ -12,9 +12,11 @@ import com.cobbinterwebs.trades.config.Configuration;
  *
  */
 public interface IChartFileReader {
+	public void process();
+	
 	@SuppressWarnings("unchecked")
 	static IChartFileReader create(File pFile, Configuration pConfig) throws Error {
-		String className = Configuration.getInstance().getTradeChartType();
+		String className = Configuration.getInstance().getChartProcessorType();
 		IChartFileReader rVal;
 		@SuppressWarnings("rawtypes")
 		Class clazz;

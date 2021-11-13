@@ -26,7 +26,7 @@ public abstract class TradeRecord implements Comparable<TradeRecord>, ITradeReco
     
     protected String timeStr;
     protected BigDecimal price = BigDecimal.ZERO;
-    protected BigDecimal size = BigDecimal.ZERO;
+    protected BigDecimal size = BigDecimal.ZERO; // leave a BigDecimal. It's just easier that way.
     protected BigDecimal bid = BigDecimal.ZERO;
     protected BigDecimal ask = BigDecimal.ZERO;
     protected Boolean tTrade = Boolean.FALSE;

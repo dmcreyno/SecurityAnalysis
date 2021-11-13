@@ -54,14 +54,6 @@ public abstract class TradeDay implements ITradeDay {
      */
      protected File aFile;
 
-     JFreeChart chart;
-     SVGGraphics2D g2;
-     Rectangle r;
-     File f;
-     TimeSeries s1 = new TimeSeries("Dataset");
- 	 Day aDay = new Day(1, 10, 2021);
- 	 Hour hr = new Hour(1, aDay);
-
 
     /**
      * The properties file used to control aspects of the ticker being analyzed. Multiple tickers are
@@ -87,10 +79,6 @@ public abstract class TradeDay implements ITradeDay {
     public TradeDay(File pFile, Configuration pConfig) {
         config = pConfig;
         aFile = pFile;
-        g2 = new SVGGraphics2D(600, 400);
-        g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
-        r = new Rectangle(0, 0, 600, 400);
-        chart.draw(g2, r);
     }
 
 

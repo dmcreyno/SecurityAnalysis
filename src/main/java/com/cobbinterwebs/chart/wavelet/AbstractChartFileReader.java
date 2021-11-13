@@ -1,16 +1,18 @@
 package com.cobbinterwebs.chart.wavelet;
 
-import java.awt.Rectangle;
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jfree.chart.JFreeChart;
-import org.jfree.svg.SVGGraphics2D;
 
 import com.cobbinterwebs.trades.config.Configuration;
 
-public class AbstractChartFileReader implements IChartFileReader {
+/**
+ * 
+ * @author Cobb Interwebs, LLC
+ *
+ */
+public abstract class AbstractChartFileReader implements IChartFileReader {
     private static final Logger log = LogManager.getLogger("com.cobbinterwebs.chart.wavelet.AbstractChartFileReader");
 
     /**
@@ -25,9 +27,15 @@ public class AbstractChartFileReader implements IChartFileReader {
      */
      protected Configuration config;
 
+     /**
+      * 
+      * @param pFile
+      * @param pConfig
+      */
     public AbstractChartFileReader(File pFile, Configuration pConfig) {
         config = pConfig;
         aFile = pFile;
     }
+
 
 }

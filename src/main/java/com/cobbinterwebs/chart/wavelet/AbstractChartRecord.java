@@ -5,7 +5,13 @@ package com.cobbinterwebs.chart.wavelet;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.text.StringTokenizer;
+
+import com.cobbinterwebs.locale.DisplayKeys;
 
 /**
  * @author davidmcreynolds
@@ -18,15 +24,17 @@ public abstract class AbstractChartRecord implements IChartRecord {
 	protected BigDecimal closePrice;
 	protected BigInteger volume;
 	protected Date dateTime;
+	
 
+    protected List<String> rawTokens = new ArrayList<>();
 
-	/**
-	 * 
-	 * @param csvRecord
-	 */
-	public AbstractChartRecord(String csvRecord) {
-		
-	}
+    public AbstractChartRecord(String pData, char delim) {
+        log.debug(DisplayKeys.get(DisplayKeys.LOG_PARSING), pData);
+        StringTokenizer strtok = new StringTokenizer(pData,delim);
+        while(strtok.hasNext()) {
+            rawTokens.add(strtok.next().replaceAll("\"",""));
+        }
+    }
 
 	/**
 	 * 

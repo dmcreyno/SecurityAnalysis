@@ -39,17 +39,17 @@ public interface IChartRecord {
 	 * @throws Error
 	 */
 	@SuppressWarnings("unchecked")
-	static ITradeRecord create(String data) throws Error {
+	static IChartRecord create(String data) throws Error {
 		log.debug("record: {}" , data);
-		String className = Configuration.getInstance().getTradeRecordType();
-		ITradeRecord rVal = null;
+		String className = Configuration.getInstance().getChartRecordProcessorType();
+		IChartRecord rVal = null;
 		@SuppressWarnings("rawtypes") Class clazz;
 		try {
 			log.debug("Loading specific platform chart record impl: {}", className);
 			clazz = Class.forName(className);
 			try {
 				@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(String.class);
-				rVal = (ITradeRecord) ctor.newInstance(data);
+				rVal = (IChartRecord) ctor.newInstance(data);
 			} catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
 				log.fatal("BOOM!!! could not find contructor", e);
 				System.exit(-1);
