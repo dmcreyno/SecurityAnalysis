@@ -12,7 +12,6 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.cobbinterwebs.trades.ITradeRecord;
 import com.cobbinterwebs.trades.config.Configuration;
 
 
@@ -58,7 +57,6 @@ public interface IChartRecord {
 			log.fatal("BOOM!!! Could not Load class {}", className, e);
 			System.exit(-1);
 		}
-
 
 		return rVal;
 	}

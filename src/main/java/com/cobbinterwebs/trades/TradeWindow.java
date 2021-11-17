@@ -29,11 +29,11 @@ import com.cobbinterwebs.trades.format.TradeMonthAsTabular;
 public class TradeWindow {
 	private static final Logger log = LogManager.getLogger("com.cobbinterwebs.trades.TradeWindow");
 	
-    private BigDecimal totalVolume = BigDecimal.ZERO;
+    private BigDecimal volume = BigDecimal.ZERO;
     private BigDecimal totalDollars = BigDecimal.ZERO;
-    private BigDecimal totalBuyVolume = BigDecimal.ZERO;
-    private BigDecimal totalSellVolume = BigDecimal.ZERO;
-    private BigDecimal totalUnknownVolume = BigDecimal.ZERO;
+    private BigDecimal buyVolume = BigDecimal.ZERO;
+    private BigDecimal sellVolume = BigDecimal.ZERO;
+    private BigDecimal unknownVolume = BigDecimal.ZERO;
     private BigDecimal totalBuyDollars = BigDecimal.ZERO;
     private BigDecimal totalSellDollars = BigDecimal.ZERO;
     private BigDecimal totalUnknownDollars = BigDecimal.ZERO;
@@ -89,11 +89,11 @@ public class TradeWindow {
     }
 
     public BigDecimal getVolume() {
-        return totalVolume;
+        return volume;
     }
 
     public void addTotalVolume(BigDecimal pArg) {
-        totalVolume = totalVolume.add(pArg);
+        volume = volume.add(pArg);
     }
 
     public BigDecimal getDollarVolume() {
@@ -105,27 +105,27 @@ public class TradeWindow {
     }
 
     public BigDecimal getBuyVolume() {
-        return totalBuyVolume;
+        return buyVolume;
     }
 
     public void addTotalBuyVolume(BigDecimal pArg) {
-        totalBuyVolume = totalBuyVolume.add(pArg);
+        buyVolume = buyVolume.add(pArg);
     }
 
     public BigDecimal getSellVolume() {
-        return totalSellVolume;
+        return sellVolume;
     }
 
     public void addTotalSellVolume(BigDecimal pArg) {
-        totalSellVolume = totalSellVolume.add(pArg);
+        sellVolume = sellVolume.add(pArg);
     }
 
     public BigDecimal getUnknownVolume() {
-        return totalUnknownVolume;
+        return unknownVolume;
     }
 
     public void addTotalUnknownVolume(BigDecimal pArg) {
-        totalUnknownVolume = totalUnknownVolume.add(pArg);
+        unknownVolume = unknownVolume.add(pArg);
     }
 
     public BigDecimal getBuyDollarVolume() {
@@ -183,5 +183,42 @@ public class TradeWindow {
 	public int getTeeTradeCount() {
         return tTradeCount;
 	}
+
+
+	public BigDecimal getPctBuyVol() {
+        try {
+            return buyVolume.divide(volume,5,RoundingMode.HALF_UP);
+        } catch(ArithmeticException ae) { 
+        	if(log.isErrorEnabled()) {
+        		log.error("volume:{}",volume, ae);
+        	}
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+	public BigDecimal getPctSellVol() {
+        try {
+            return sellVolume.divide(volume,5,RoundingMode.HALF_UP);
+        } catch(ArithmeticException ae) { 
+        	if(log.isErrorEnabled()) {
+        		log.error("volume:{}",volume, ae);
+        	}
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+	public BigDecimal getPctUnknownVol() {
+        try {
+            return unknownVolume.divide(volume,5,RoundingMode.HALF_UP);
+        } catch(ArithmeticException ae) { 
+        	if(log.isErrorEnabled()) {
+        		log.error("volume:{}",volume, ae);
+        	}
+        }
+
+        return BigDecimal.ZERO;
+    }
     
 }

@@ -8,14 +8,6 @@ import java.math.RoundingMode;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.Hour;
-import org.jfree.data.time.Minute;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.svg.SVGGraphics2D;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Copyright 2021 Cobb Interwebs, LLC
@@ -37,7 +29,7 @@ import com.cobbinterwebs.trades.format.TradeDayPresentation;
  * @see com.cobbinterwebs.trades.TradeDay
  */
 public abstract class TradeDay implements ITradeDay {
-    private static final Logger log = LogManager.getLogger("com.cobbinterwebs.fidelity.trades.TradeDay");
+    private static final Logger log = LogManager.getLogger(TradeDay.class);
 
     /**
      * The date for which the data has been stored. Format: yyyymmdd.
@@ -55,13 +47,6 @@ public abstract class TradeDay implements ITradeDay {
      protected File aFile;
 
 
-    /**
-     * The properties file used to control aspects of the ticker being analyzed. Multiple tickers are
-     * processed and each can be configured to have different properties, rounding, precision, etc. The TradeDay
-     * needs this information to control maths.
-     */
-     protected Configuration config;
-     
      private BigDecimal dollarVolume = BigDecimal.ZERO;
      private BigDecimal volume = BigDecimal.ZERO;
      private BigDecimal buyVolume = BigDecimal.ZERO;
@@ -76,23 +61,29 @@ public abstract class TradeDay implements ITradeDay {
     /**
      * The data comes as a CSV of trades for one day.
      */
-    public TradeDay(File pFile, Configuration pConfig) {
-        config = pConfig;
+    public TradeDay(File pFile) {
         aFile = pFile;
+        log.debug("created trade day for file {}.",pFile.getName());
     }
 
 
     @Override
     public void addTradeRecord(ITradeRecord pTradeRecord) {
     	BigDecimal tradeSize = pTradeRecord.getSize();
+    	BigDecimal tradeValue = tradeSize.multiply(pTradeRecord.getPrice());
     	volume = volume.add(tradeSize);
+    	dollarVolume = dollarVolume.add(tradeValue);
     	if(TradeRecord.BuySell.BUY == pTradeRecord.sentiment()) {
-    		buyVolume = buyVolume.add(volume);
+    		buyVolume = buyVolume.add(tradeSize);
+    		buyDollarVolume = buyDollarVolume.add(tradeValue);
     	} else if(TradeRecord.BuySell.SELL == pTradeRecord.sentiment()) {
-    		sellVolume = sellVolume.add(volume);
+    		sellVolume = sellVolume.add(tradeSize);
+    		sellDollarVolume = sellDollarVolume.add(tradeValue);
     	} else {
-    		unknownVolume = unknownVolume.add(volume);
+    		unknownVolume = unknownVolume.add(tradeSize);
+    		unknownDollarVolume = unknownDollarVolume.add(tradeValue);
     	}
+    	
     	tradeCount++;
     	
     	if(pTradeRecord.isTeeTrade()) {
@@ -130,7 +121,7 @@ public abstract class TradeDay implements ITradeDay {
      */
     @Override
 	public BigDecimal getAveragePrice() {
-        return dollarVolume.divide(volume, config.getMathScale(), RoundingMode.HALF_UP);
+        return dollarVolume.divide(volume, Configuration.getInstance().getMathScale(), RoundingMode.HALF_UP);
     }
 
     /**
@@ -226,8 +217,12 @@ public abstract class TradeDay implements ITradeDay {
     @Override
 	public BigDecimal getPctBuyVol() {
         try {
-            return getBuyVolume().divide(getVolume(),5,RoundingMode.HALF_UP);
-        } catch(ArithmeticException ae) { }
+            return buyVolume.divide(volume,5,RoundingMode.HALF_UP);
+        } catch(ArithmeticException ae) { 
+        	if(log.isErrorEnabled()) {
+        		log.error("volume:{}",volume, ae);
+        	}
+        }
 
         return BigDecimal.ZERO;
     }
@@ -235,8 +230,12 @@ public abstract class TradeDay implements ITradeDay {
     @Override
 	public BigDecimal getPctSellVol() {
         try {
-            return getSellVolume().divide(getVolume(),5,RoundingMode.HALF_UP);
-        } catch(ArithmeticException ae) { }
+            return sellVolume.divide(volume,5,RoundingMode.HALF_UP);
+        } catch(ArithmeticException ae) { 
+        	if(log.isErrorEnabled()) {
+        		log.error("volume:{}",volume, ae);
+        	}
+        }
 
         return BigDecimal.ZERO;
     }
@@ -244,38 +243,16 @@ public abstract class TradeDay implements ITradeDay {
     @Override
 	public BigDecimal getPctUnknownVol() {
         try {
-            return getUnknownVolume().divide(getVolume(),5,RoundingMode.HALF_UP);
-        } catch(ArithmeticException ae) { }
+            return unknownVolume.divide(volume,5,RoundingMode.HALF_UP);
+        } catch(ArithmeticException ae) { 
+        	if(log.isErrorEnabled()) {
+        		log.error("volume:{}",volume, ae);
+        	}
+        }
 
         return BigDecimal.ZERO;
     }
 
-    @Override
-	public BigDecimal getPctBuyDolVol() {
-        try {
-            return getBuyDollarVolume().divide(getDollarVolume(), 5, RoundingMode.HALF_UP);
-        } catch(ArithmeticException ae) { }
-
-        return BigDecimal.ZERO;
-    }
-
-    @Override
-	public BigDecimal getPctSellDolVol() {
-        try {
-            return getSellDollarVolume().divide(getDollarVolume(),5,RoundingMode.HALF_UP);
-        } catch(ArithmeticException ae) { }
-
-        return BigDecimal.ZERO;
-    }
-
-    @Override
-	public BigDecimal getPctUnknownDolVol() {
-        try {
-            return getUnknownDollarVolume().divide(getDollarVolume(),5,RoundingMode.HALF_UP);
-        } catch(ArithmeticException ae) { }
-
-        return BigDecimal.ZERO;
-    }
 
     /**
      * Looks like this prints the trade records for the day.
@@ -318,5 +295,7 @@ public abstract class TradeDay implements ITradeDay {
 
         return buf.toString();
     }
+
+
 
 }

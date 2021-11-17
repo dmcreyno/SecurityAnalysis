@@ -4,6 +4,9 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.cobbinterwebs.trades.config.Configuration;
 
 /**
@@ -12,25 +15,34 @@ import com.cobbinterwebs.trades.config.Configuration;
  *
  */
 public interface IChartFileReader {
+	static final Logger log = LogManager.getLogger("om.cobbinterwebs.chart.wavelet.IChartFileReader");
 	public void process();
 	
+	/**
+	 * 
+	 * @param data a row (record) from the chart file csv.
+	 * @return An instance of the class configured in the properties file.
+	 * @throws Error
+	 */
 	@SuppressWarnings("unchecked")
-	static IChartFileReader create(File pFile, Configuration pConfig) throws Error {
+	static IChartFileReader create(File pFile) throws Error {
 		String className = Configuration.getInstance().getChartProcessorType();
-		IChartFileReader rVal;
+		IChartFileReader rVal = null;
 		@SuppressWarnings("rawtypes")
 		Class clazz;
 		try {
-			clazz = Class.forName(className);
-			
+			log.debug("Loading specific platform chart file impl: {}", className);
+			clazz = Class.forName(className);			
 			try {
-			@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class, Configuration.class);
-			rVal = (IChartFileReader) ctor.newInstance(pFile,pConfig);
+				@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class, Configuration.class);
+				rVal = (IChartFileReader) ctor.newInstance(pFile);
 			} catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
-				throw new Error(e);
+				log.fatal("BOOM!!! could not find contructor", e);
+				System.exit(-1);
 			}
 		} catch (ClassNotFoundException e) {
-			throw new Error(e);
+			log.fatal("BOOM!!! Could not Load class {}", className, e);
+			System.exit(-1);
 		}
 		
 		return rVal;

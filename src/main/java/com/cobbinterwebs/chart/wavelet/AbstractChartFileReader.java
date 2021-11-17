@@ -20,21 +20,13 @@ public abstract class AbstractChartFileReader implements IChartFileReader {
      */
      protected File aFile;
 
-    /**
-     * The properties file used to control aspects of the ticker being analyzed. Multiple tickers are
-     * processed and each can be configured to have different properties, rounding, precision, etc. The TradeDay
-     * needs this information to control maths.
-     */
-     protected Configuration config;
-
      /**
       * 
       * @param pFile
       * @param pConfig
       */
-    public AbstractChartFileReader(File pFile, Configuration pConfig) {
-        config = pConfig;
-        aFile = pFile;
+    public AbstractChartFileReader(File pFile) {
+       aFile = pFile;
     }
 
 

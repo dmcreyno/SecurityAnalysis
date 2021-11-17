@@ -61,18 +61,13 @@ public interface ITradeDay {
 	
 	BigDecimal getPctUnknownVol();
 	
-	BigDecimal getPctBuyDolVol();
-	
-	BigDecimal getPctSellDolVol();
-	
-	BigDecimal getPctUnknownDolVol();
 	
 	void writeSummary(PrintWriter psw, TradeDayPresentation formatter);
 	
 	String getDebugString();
 	
 	@SuppressWarnings("unchecked")
-	static ITradeDay create(File pFile, Configuration pConfig) throws Error {
+	static ITradeDay create(File pFile) throws Error {
 		String className = Configuration.getInstance().getTradeDayType();
 		ITradeDay rVal;
 		@SuppressWarnings("rawtypes") Class clazz;
@@ -80,8 +75,8 @@ public interface ITradeDay {
 			clazz = Class.forName(className);
 			
 			try {
-			@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class, Configuration.class);
-			rVal = (ITradeDay) ctor.newInstance(pFile,pConfig);
+			@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class);
+			rVal = (ITradeDay) ctor.newInstance(pFile);
 			} catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
 				throw new Error(e);
 			}

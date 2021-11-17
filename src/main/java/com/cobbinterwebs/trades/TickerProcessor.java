@@ -51,7 +51,7 @@ class TickerProcessor extends Thread {
 	public void run() {
 		
 		try {
-			processDirectory(baseDirName, tickerSymbol);
+			processDirectory();
 		} catch (IOException e) {
 			log.error("There was a problem processing ticker ().", tickerSymbol, e);
 		}
@@ -66,7 +66,7 @@ class TickerProcessor extends Thread {
      * @param tickerSymbol
      * @throws IOException 
      */
-    private void processDirectory(String baseDirName, String ticker) throws IOException {
+    private void processDirectory() throws IOException {
         ThreadContext.put("ticker", tickerSymbol);
         log.info("\t"+DisplayKeys.get(DisplayKeys.PROCESSING_DIR), baseDirName);
         Configuration config = Configuration.getInstance();
@@ -82,7 +82,7 @@ class TickerProcessor extends Thread {
 
         TradeMonthAsTabular monthFormatter = new TradeMonthAsTabular();
 
-        outfile = new File(outStr + fileSeparator + ticker + fileSeparator + ticker + "." + Configuration.CSV_FILE_EXTENSION);
+        outfile = new File(outStr + fileSeparator + tickerSymbol + fileSeparator + tickerSymbol + "." + Configuration.CSV_FILE_EXTENSION);
         log.info(DisplayKeys.get(DisplayKeys.PROCESSING_OUTPUT_FILE), outfile.getAbsolutePath());
 
         try (   FileWriter outFileWriter = new FileWriter(outfile);
@@ -93,7 +93,7 @@ class TickerProcessor extends Thread {
 
             pw.println(OUT_HEADER);
 
-            inDirStr = config.getHomeDir() + "/" + ticker + "/input"; // The input dir will be the HOME dir.
+            inDirStr = config.getHomeDir() + "/" + tickerSymbol + "/input"; // The input dir will be the HOME dir.
             inputList = FileUtils.listFiles(new File(inDirStr), Configuration.FILE_EXT_FOR_PROCESSING,false);
             sortedInputList = new TreeSet<>(Comparator.comparing(File::getName));
 
@@ -112,7 +112,7 @@ class TickerProcessor extends Thread {
                 }
 
                 
-                ITradeDay aDay = ITradeDay.create(aFile, config);
+                ITradeDay aDay = ITradeDay.create(aFile);
                 aDay.process();
 
                 // if NOT zero volume.

@@ -20,7 +20,7 @@ import com.cobbinterwebs.locale.DisplayKeys;
  * @see com.cobbinterwebs.trades.ITradeRecord
  */
 public abstract class TradeRecord implements Comparable<TradeRecord>, ITradeRecord {
-    private static final Logger log = LogManager.getLogger("com.cobbinterwebs.trades.TradeRecord");
+    private static final Logger log = LogManager.getLogger(TradeRecord.class);
 
     protected MathContext mathCtx = new MathContext(Integer.MAX_VALUE, RoundingMode.HALF_UP);
     
@@ -39,6 +39,7 @@ public abstract class TradeRecord implements Comparable<TradeRecord>, ITradeReco
         while(strtok.hasNext()) {
             rawTokens.add(strtok.next().replaceAll("\"",""));
         }
+        log.debug("created a trade record for \n{}.", pData);
     }
 
    abstract public Date getTime();

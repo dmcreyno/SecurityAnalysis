@@ -74,9 +74,6 @@ public class TradeDayAsCSVString implements TradeDayPresentation {
                         aTradeDay.getPctBuyVol() + delimiter +
                         aTradeDay.getPctSellVol() + delimiter +
                         aTradeDay.getPctUnknownVol() + delimiter +
-                        aTradeDay.getPctBuyDolVol() + delimiter +
-                        aTradeDay.getPctSellDolVol() + delimiter +
-                        aTradeDay.getPctUnknownDolVol() + delimiter +
                         aTradeDay.getTeeTradeCount());
                 rVal = recordString.toString();
             } catch (Exception e) {

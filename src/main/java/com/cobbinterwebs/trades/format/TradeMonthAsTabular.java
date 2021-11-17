@@ -17,7 +17,7 @@ import com.cobbinterwebs.locale.DisplayKeys;
 import com.cobbinterwebs.trades.TradeWindow;
 
 public class TradeMonthAsTabular {
-    NumberFormat percentageFormatter = new DecimalFormat("#.0%");
+    NumberFormat percentageFormatter = new DecimalFormat("0.0#%");
     NumberFormat shareVolumeFormatter = new DecimalFormat("#,###");
     NumberFormat usdFormatter = new DecimalFormat("$#,##0.00");
     NumberFormat usdTripsFormatter =    new DecimalFormat("$#,##0.000###");
@@ -31,6 +31,9 @@ public class TradeMonthAsTabular {
                 DisplayKeys.get(DisplayKeys.SUMMARY_BUY_VOL, shareVolumeFormatter.format(pMonth.getBuyVolume())) + "\n" +
                 DisplayKeys.get(DisplayKeys.SUMMARY_SELL_VOL, shareVolumeFormatter.format(pMonth.getSellVolume())) + "\n" +
                 DisplayKeys.get(DisplayKeys.SUMMARY_OTHER_VOL, shareVolumeFormatter.format(pMonth.getUnknownVolume())) + "\n" +
+                DisplayKeys.get(DisplayKeys.SUMMARY_BUY_VOL, shareVolumeFormatter.format(pMonth.getBuyVolume())) + " (" + percentageFormatter.format( pMonth.getPctBuyVol())+ ")" + "\n" +
+                DisplayKeys.get(DisplayKeys.SUMMARY_SELL_VOL, shareVolumeFormatter.format(pMonth.getSellVolume())) + " (" + percentageFormatter.format(pMonth.getPctSellVol())+ ")" + "\n" +
+                DisplayKeys.get(DisplayKeys.SUMMARY_OTHER_VOL, shareVolumeFormatter.format(pMonth.getUnknownVolume())) + " (" + percentageFormatter.format(pMonth.getPctUnknownVol())+ ")" + "\n" +
                 DisplayKeys.get(DisplayKeys.SUMMARY_DOLLAR_VOL, usdFormatter.format(pMonth.getDollarVolume())) + "\n" +
                 DisplayKeys.get(DisplayKeys.SUMMARY_BUY_DOLLAR_VOL, usdFormatter.format(pMonth.getBuyDollarVolume())) + "\n" +
                 DisplayKeys.get(DisplayKeys.SUMMARY_SELL_DOLLAR_VOL, usdFormatter.format(pMonth.getSellDollarVolume())) + "\n" +

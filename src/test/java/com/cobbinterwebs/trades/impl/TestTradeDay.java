@@ -256,32 +256,6 @@ public class TestTradeDay implements com.cobbinterwebs.trades.ITradeDay {
 		return BigDecimal.ZERO;
 	}
 	
-	@Override
-	public BigDecimal getPctBuyDolVol() {
-		try {
-			return getBuyDollarVolume().divide(getDollarVolume(), 5, RoundingMode.HALF_UP);
-		} catch(ArithmeticException ignored) { }
-		
-		return BigDecimal.ZERO;
-	}
-	
-	@Override
-	public BigDecimal getPctSellDolVol() {
-		try {
-			return getSellDollarVolume().divide(getDollarVolume(),5,RoundingMode.HALF_UP);
-		} catch(ArithmeticException ignored) { }
-		
-		return BigDecimal.ZERO;
-	}
-	
-	@Override
-	public BigDecimal getPctUnknownDolVol() {
-		try {
-			return getUnknownDollarVolume().divide(getDollarVolume(),5,RoundingMode.HALF_UP);
-		} catch(ArithmeticException ignored) { }
-		
-		return BigDecimal.ZERO;
-	}
 	
 	/**
 	 * Looks like this prints the trade records for the day.
