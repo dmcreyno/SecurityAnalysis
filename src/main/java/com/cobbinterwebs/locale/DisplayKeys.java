@@ -54,8 +54,12 @@ public class DisplayKeys {
     public static final String LOG_PARSING                  = "messageKey.trace.parsing.data";
     public static final String SUMMARY_OVERALL_HEADER       = "messageKey.summary.overall.header";
     public static final String SUMMARY_MONTH_VWAP           = "messageKey.summary.monthly.avgPrice";
-
-    private static final DisplayKeys _instance = new DisplayKeys();
+    public static final String NUMBER_AS_PERCENTAGE         = "number.format.percentage";
+    public static final String SHARE_VOLUME                 = "number.format.shareVolume";
+    public static final String NUMBER_AS_CURRENCY           = "number.format.currency";
+    public static final String NUMBER_AS_CURRENCY_TRIPS     = "number.format.currentcy.trips";
+    
+  private static final DisplayKeys _instance = new DisplayKeys();
     private final ResourceBundle displayKeys;
 
     private DisplayKeys() {

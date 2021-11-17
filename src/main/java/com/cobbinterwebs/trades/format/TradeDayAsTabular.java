@@ -27,24 +27,24 @@ public class TradeDayAsTabular implements TradeDayPresentation {
     @Override
     public String formatTradeDay(ITradeDay aTradeDay) {
         // Create some formatters for the money and percentages and share volume
-        NumberFormat percentageFormatter = new DecimalFormat("0.0#%");
-        NumberFormat shareVolumeFormatter = new DecimalFormat("#,###");
-        NumberFormat usdFormatter = new DecimalFormat("$#,##0.00");
-        NumberFormat usdTripsFormatter =    new DecimalFormat("$#,##0.000###");
+        NumberFormat percentageFormatter = new DecimalFormat(DisplayKeys.get(DisplayKeys.NUMBER_AS_PERCENTAGE));
+        NumberFormat shareVolumeFormatter = new DecimalFormat(DisplayKeys.get(DisplayKeys.SHARE_VOLUME));
+        NumberFormat currencyFormat = new DecimalFormat(DisplayKeys.get(DisplayKeys.NUMBER_AS_CURRENCY));
+        NumberFormat tripsCurrencyFormatter =    new DecimalFormat(DisplayKeys.get(DisplayKeys.NUMBER_AS_CURRENCY_TRIPS));
 
 
         String rVal =
                 DisplayKeys.get(DisplayKeys.SUMMARY_REC_SEPARATOR) + "\n" +
                         DisplayKeys.get(DisplayKeys.SUMMARY_HEADER, aTradeDay.getDateStr()) + "\n" +
-                        DisplayKeys.get(DisplayKeys.SUMMARY_AVG_PRICE,usdTripsFormatter.format(aTradeDay.getAveragePrice())) + "\n" +
+                        DisplayKeys.get(DisplayKeys.SUMMARY_AVG_PRICE,tripsCurrencyFormatter.format(aTradeDay.getAveragePrice())) + "\n" +
                         DisplayKeys.get(DisplayKeys.SUMMARY_VOLUME,shareVolumeFormatter.format(aTradeDay.getVolume())) + "\n" +
                         DisplayKeys.get(DisplayKeys.SUMMARY_BUY_VOL, shareVolumeFormatter.format(aTradeDay.getBuyVolume())) + " (" + percentageFormatter.format( aTradeDay.getPctBuyVol())+ ")" + "\n" +
                         DisplayKeys.get(DisplayKeys.SUMMARY_SELL_VOL, shareVolumeFormatter.format(aTradeDay.getSellVolume())) + " (" + percentageFormatter.format(aTradeDay.getPctSellVol())+ ")" + "\n" +
                         DisplayKeys.get(DisplayKeys.SUMMARY_OTHER_VOL, shareVolumeFormatter.format(aTradeDay.getUnknownVolume())) + " (" + percentageFormatter.format(aTradeDay.getPctUnknownVol())+ ")" + "\n" +
-                        DisplayKeys.get(DisplayKeys.SUMMARY_DOLLAR_VOL, usdFormatter.format(aTradeDay.getDollarVolume())) + "\n" +
-                        DisplayKeys.get(DisplayKeys.SUMMARY_BUY_DOLLAR_VOL, usdFormatter.format(aTradeDay.getBuyDollarVolume())) + "\n" +
-                        DisplayKeys.get(DisplayKeys.SUMMARY_SELL_DOLLAR_VOL, usdFormatter.format(aTradeDay.getSellDollarVolume())) + "\n" +
-                        DisplayKeys.get(DisplayKeys.SUMMARY_OTHER_DOLLAR_VOL, usdFormatter.format(aTradeDay.getUnknownDollarVolume())) + "\n" +
+                        DisplayKeys.get(DisplayKeys.SUMMARY_DOLLAR_VOL, currencyFormat.format(aTradeDay.getDollarVolume())) + "\n" +
+                        DisplayKeys.get(DisplayKeys.SUMMARY_BUY_DOLLAR_VOL, currencyFormat.format(aTradeDay.getBuyDollarVolume())) + "\n" +
+                        DisplayKeys.get(DisplayKeys.SUMMARY_SELL_DOLLAR_VOL, currencyFormat.format(aTradeDay.getSellDollarVolume())) + "\n" +
+                        DisplayKeys.get(DisplayKeys.SUMMARY_OTHER_DOLLAR_VOL, currencyFormat.format(aTradeDay.getUnknownDollarVolume())) + "\n" +
                         DisplayKeys.get(DisplayKeys.SUMMARY_T_TRADE_COUNT, aTradeDay.getTeeTradeCount());
 
 
