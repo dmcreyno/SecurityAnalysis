@@ -105,37 +105,38 @@ class TickerProcessor extends Thread {
 
                 if(currentFileName.startsWith(".")) {
                     log.debug(DisplayKeys.get(DisplayKeys.SKIPPING_HIDDEN_FILE),currentFileName);
-                }
-
-                if(log.isDebugEnabled()) {
-                    log.debug(DisplayKeys.get(DisplayKeys.PROCESSING_FILE),currentFileName);
-                }
-
-                
-                ITradeDay aDay = ITradeDay.create(aFile);
-                aDay.process();
-
-                // if NOT zero volume.
-                if(!BigDecimal.ZERO.equals(aDay.getVolume())) {
-                    this.fileCounter++;
-                    aDay.setDayOrdinal(this.fileCounter);
-                    windowTotals.add(aDay);
-                    TradeDayPresentation formatter = TradeDayFormatFactory.getCsvFormatter();
-                    String logMessage = formatter.formatTradeDay(aDay);
-                    if(true) {
-                        summaryPrintWriter.println(TradeDayFormatFactory.getTabularFormatter().formatTradeDay(aDay));
-                        log.debug("{}", logMessage);
+                    
+                } else {
+                    if(log.isDebugEnabled()) {
+                        log.debug(DisplayKeys.get(DisplayKeys.PROCESSING_FILE),currentFileName);
                     }
-                    if(true) {
-                        try {
-                            aDay.writeSummary(pw, formatter);
-                            pw.flush();
-                        } catch (Exception e) {
-                            log.error(DisplayKeys.get(DisplayKeys.ERROR), e);
-                            System.exit(-1);
+                    
+                    ITradeDay aDay = ITradeDay.create(aFile);
+                    aDay.process();
+
+                    // if NOT zero volume.
+                    if(!BigDecimal.ZERO.equals(aDay.getVolume())) {
+                        this.fileCounter++;
+                        aDay.setDayOrdinal(this.fileCounter);
+                        windowTotals.add(aDay);
+                        TradeDayPresentation formatter = TradeDayFormatFactory.getCsvFormatter();
+                        String logMessage = formatter.formatTradeDay(aDay);
+                        if(true) {
+                            summaryPrintWriter.println(TradeDayFormatFactory.getTabularFormatter().formatTradeDay(aDay));
+                            log.debug("{}", logMessage);
+                        }
+                        if(true) {
+                            try {
+                                aDay.writeSummary(pw, formatter);
+                                pw.flush();
+                            } catch (Exception e) {
+                                log.error(DisplayKeys.get(DisplayKeys.ERROR), e);
+                                System.exit(-1);
+                            }
                         }
                     }
                 }
+
             });
             summaryPrintWriter.println(monthFormatter.formatTradeMonth(this.windowTotals));
         } finally {

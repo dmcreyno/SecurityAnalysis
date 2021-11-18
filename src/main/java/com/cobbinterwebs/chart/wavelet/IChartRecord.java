@@ -25,6 +25,7 @@ public interface IChartRecord {
 	
 	public Date getDateTime();
 
+	public BigDecimal getOpenPrice();
 	public BigDecimal getHighPrice();
 	public BigDecimal getLowPrice();
 	public BigDecimal getClosePrice();

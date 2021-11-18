@@ -34,23 +34,23 @@ public class Configuration {
      */
     public static class PropertyConstants {
         public static final String CHART_RECORD_PROCESSOR_TYPE         = "com.cobbinterwebs.trade.chart.record.class";
-        public static final String CHART_PROCESSOR_TYPE         = "com.cobbinterwebs.trade.chart.processor.class";
-        public static final String TRADE_DAY_TYPE         = "com.cobbinterwebs.trade.day.class";
-        public static final String TRADE_RECORD_TYPE      = "com.cobbinterwebs.trade.record.class";
+        public static final String CHART_PROCESSOR_TYPE                = "com.cobbinterwebs.trade.chart.processor.class";
+        public static final String TRADE_DAY_TYPE                      = "com.cobbinterwebs.trade.day.class";
+        public static final String TRADE_RECORD_TYPE                   = "com.cobbinterwebs.trade.record.class";
         /**
          * The directory containing the folders for the various stock symbols to be processed.
          */
-        public static final String HOME_KEY               = "com.cobbinterwebs.trades.home";
-        public static final String RUNNING_AVERAGE        = "com.cobbinterwebs.running.vwda";
-        static final String OUTPUT_HEADER_LINE_01         = "com.cobbinterwebs.trades.output.header1";
-        static final String HEADER_SKIP_LINE_COUNT        = "com.cobbinterwebs.trades.skip.header";
-        static final String DATE_LINE_NUM                 = "com.cobbinterwebs.trades.date.line.number"; // Date Line number in the Fidelity CSV export
-        static final String BUCKET_NAMES                  = "com.cobbinterwebs.trades.bucket.names"; //=0001,0002
-        static final String BUCKET_MINS                   = "com.cobbinterwebs.trades.bucket.mins";  //=0.00001,0.00019
-        static final String BUCKET_MAXS                   = "com.cobbinterwebs.trades.bucket.maxs";  //=0.00020,0.000299
-        static final String BUCKET_LOGIC                  = "com.cobbinterwebs.trades.bucket.logx";  //=INCLUSIVE,INCLUSIVE
-        static final String BIG_NUMBER_SCALE              = "com.cobbinterwebs.trades.scale";
-        static final String INCLUDE_TRADES                = "com.cobbinterwebs.trades.include";
+        public static final String HOME_KEY                            = "com.cobbinterwebs.trades.home";
+        public static final String RUNNING_AVERAGE                     = "com.cobbinterwebs.running.vwda";
+        static final String OUTPUT_HEADER_LINE_01                      = "com.cobbinterwebs.trades.output.header1";
+        static final String HEADER_SKIP_LINE_COUNT                     = "com.cobbinterwebs.trades.skip.header";
+        static final String DATE_LINE_NUM                              = "com.cobbinterwebs.trades.date.line.number"; // Date Line number in the Fidelity CSV export
+        static final String BUCKET_NAMES                               = "com.cobbinterwebs.trades.bucket.names"; //=0001,0002
+        static final String BUCKET_MINS                                = "com.cobbinterwebs.trades.bucket.mins";  //=0.00001,0.00019
+        static final String BUCKET_MAXS                                = "com.cobbinterwebs.trades.bucket.maxs";  //=0.00020,0.000299
+        static final String BUCKET_LOGIC                               = "com.cobbinterwebs.trades.bucket.logx";  //=INCLUSIVE,INCLUSIVE
+        static final String BIG_NUMBER_SCALE                           = "com.cobbinterwebs.trades.scale";
+        static final String INCLUDE_TRADES                             = "com.cobbinterwebs.trades.include";
     }
 
     /**

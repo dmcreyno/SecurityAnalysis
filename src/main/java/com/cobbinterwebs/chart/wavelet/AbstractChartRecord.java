@@ -19,6 +19,7 @@ import com.cobbinterwebs.locale.DisplayKeys;
  */
 public abstract class AbstractChartRecord implements IChartRecord {
 	
+	protected BigDecimal openPrice;
 	protected BigDecimal highPrice;
 	protected BigDecimal lowPrice;
 	protected BigDecimal closePrice;
@@ -79,6 +80,10 @@ public abstract class AbstractChartRecord implements IChartRecord {
 		return dateTime;
 	}
 
+	@Override
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
 	
 
 }

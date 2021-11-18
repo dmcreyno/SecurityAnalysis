@@ -34,7 +34,7 @@ public interface IChartFileReader {
 			log.debug("Loading specific platform chart file impl: {}", className);
 			clazz = Class.forName(className);			
 			try {
-				@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class, Configuration.class);
+				@SuppressWarnings("rawtypes") Constructor ctor = clazz.getConstructor(File.class);
 				rVal = (IChartFileReader) ctor.newInstance(pFile);
 			} catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
 				log.fatal("BOOM!!! could not find contructor", e);
@@ -47,5 +47,10 @@ public interface IChartFileReader {
 		
 		return rVal;
 	}
+
+	/**
+	 * @return
+	 */
+	double[] getOpenPriceArray();
 
 }

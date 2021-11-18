@@ -20,9 +20,18 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 package com.cobbinterwebs.chart.wavelet;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.TreeSet;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.cobbinterwebs.locale.DisplayKeys;
 
 import com.cobbinterwebs.trades.config.Configuration;
 
@@ -31,7 +40,7 @@ import jwave.transforms.AncientEgyptianDecomposition;
 import jwave.transforms.BasicTransform;
 import jwave.transforms.FastWaveletTransform;
 import jwave.transforms.wavelets.Wavelet;
-import jwave.transforms.wavelets.WaveletBuilder;
+import jwave.transforms.wavelets.daubechies.Daubechies5;
 
 /**
  * 
@@ -39,34 +48,96 @@ import jwave.transforms.wavelets.WaveletBuilder;
  */
 public class Main {
     private static final Logger log = LogManager.getLogger(com.cobbinterwebs.chart.wavelet.Main.class);
-	private String baseDir;
+	private static String baseDir = "";
 	private double[] arrTime;
 
-	public Main() {
+	public Main(String[] args) {
 		
 	}
 
 	public static void main(String[] args) {
-		
+        log.info(DisplayKeys.get(DisplayKeys.STARTUP));
+		Configuration.getInstance().initTradeSymbolMap(args);
+		         Main app = new Main(args);
+        
+        // The home directory has folders for each ticker symbol to be analyzed.
+        baseDir = Configuration.getInstance().getHomeDir();
+        if(baseDir == null || baseDir.length() == 0) {
+            log.fatal(DisplayKeys.get(DisplayKeys.STARTUP_BASEDIR_MISSING), Configuration.PropertyConstants.HOME_KEY);
+            System.exit(-1);
+        }
+        app.run();
+        log.info(". . . finished.");
+
 
 	}
 	
+	@SuppressWarnings("unused")
 	void run() {
+		Configuration config = Configuration.getInstance();
+        File dir = FileUtils.getFile(baseDir);
+        File[] files = dir.listFiles();
+        File outfile;
+        String fileSeparator = System.getProperty("file.separator");
+        
+        if(null == files) {
+            log.error("No directories to process.");
+        } else {
+    		try {
+           	Stream<File> theDirStream = Arrays.stream(files).filter(File::isDirectory);
+            	theDirStream.forEach(file -> {
+                    String baseDirName = file.getAbsolutePath();
+                    String tickerSymbol = file.getName();
+                    log.info("wavlet processing ticker, {}, in {}.", tickerSymbol, baseDirName);
+//                    if(true) { // TODO revisit selective processing.
+                    if(Configuration.getInstance().symbolWillBeProcessed(tickerSymbol)) {
+                    	String inDirStr = config.getHomeDir() + "/" + tickerSymbol + "/chartInput"; // The input dir will be the HOME dir.
+                    	Collection<File> inputList = FileUtils.listFiles(new File(inDirStr), Configuration.FILE_EXT_FOR_PROCESSING,false);
+                    	TreeSet<File> sortedInputList = new TreeSet<>(Comparator.comparing(File::getName));
+                    	sortedInputList.addAll(inputList);
+                    	sortedInputList.forEach( aFile -> {
+                            String currentFileName = aFile.getName();
+
+                            if(currentFileName.startsWith(".")) {
+                                log.debug(DisplayKeys.get(DisplayKeys.SKIPPING_HIDDEN_FILE),currentFileName);
+                            }
+
+                            if(log.isInfoEnabled()) {
+                                log.info(DisplayKeys.get(DisplayKeys.PROCESSING_FILE),currentFileName);
+                            }
+                            
+                            IChartFileReader chartFileReader = IChartFileReader.create(aFile);
+                            chartFileReader.process();
+                    	});
+                    } else {
+                    	log.info("skipping {}", tickerSymbol);
+                    }
+                });
+    		} catch (Exception ex) {
+    			log.error("run failed.", ex);
+    			System.exit(-1);
+    		}
+
+        }
+	}
+	
+
+	
+    public void initCommandLine(String[] args) {
+        if(log.isDebugEnabled()) {
+        	StringBuilder buf = new StringBuilder();
+            for (String arg: args) {
+            	buf.append(arg);
+            }
+            log.info("Main(String[]) - arg: {}", buf.toString());
+        }
 		try {
-			baseDir = Configuration.getInstance().getHomeDir();
-			
+	    	Configuration.getInstance().initTradeSymbolMap(args);
 		} catch (Exception ex) {
 			log.error("Initialization failed.", ex);
 			System.exit(-1);
 		}
-
-	}
-	
-	void doWaveletTransform() throws JWaveException {
-		Wavelet wavelet = WaveletBuilder.create("");
-		BasicTransform basicTransform = new FastWaveletTransform(wavelet);
-		AncientEgyptianDecomposition transform = new AncientEgyptianDecomposition(basicTransform);
-		double[] resultArr = transform.forward(arrTime);
+		
 	}
 
 }
