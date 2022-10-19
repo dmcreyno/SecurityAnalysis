@@ -30,6 +30,12 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYDataset;
 
 import com.cobbinterwebs.locale.DisplayKeys;
 
@@ -107,7 +113,13 @@ public class Main {
                             }
                             
                             IChartFileReader chartFileReader = IChartFileReader.create(aFile);
-                            chartFileReader.process();
+                            double[] coeffs = chartFileReader.process();
+                            XYDataset dataset = new DefaultXYDataset();
+                            XYPlot xyplot = new XYPlot();
+//    public XYPlot(XYDataset dataset, ValueAxis domainAxis, ValueAxis rangeAxis,
+//                            XYItemRenderer renderer) {
+                           
+
                     	});
                     } else {
                     	log.info("skipping {}", tickerSymbol);

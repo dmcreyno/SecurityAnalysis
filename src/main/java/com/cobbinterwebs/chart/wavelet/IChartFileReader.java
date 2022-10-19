@@ -16,11 +16,11 @@ import com.cobbinterwebs.trades.config.Configuration;
  */
 public interface IChartFileReader {
 	static final Logger log = LogManager.getLogger("om.cobbinterwebs.chart.wavelet.IChartFileReader");
-	public void process();
+	public double[] process();
 	
 	/**
 	 * 
-	 * @param data a row (record) from the chart file csv.
+	 * @param the file to be read.
 	 * @return An instance of the class configured in the properties file.
 	 * @throws Error
 	 */
